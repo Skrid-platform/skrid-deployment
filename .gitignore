@@ -1,5 +1,5 @@
 .env
 backend/
 frontend/
-neo4j/
+neo4j/neo4j_data/
 data-ingestion/
