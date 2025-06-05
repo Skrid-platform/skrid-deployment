@@ -44,7 +44,7 @@ This repository provides Docker-based orchestration for the SKRID platform.
 4. **Load the graph dump into the database** (once Neo4j is initialized):
 
    ```bash
-   docker run --rm --it --name neo4j-admin-loader  \
+   docker run --rm --name neo4j-admin-loader  \
       -v "$(pwd)/neo4j/neo4j_data":/data  \
       -v "$(pwd)/neo4j/neo4j_import":/import  \
       -v "$(pwd)/neo4j/neo4j_config/neo4j.conf":/conf/neo4j.conf  \
@@ -52,7 +52,11 @@ This repository provides Docker-based orchestration for the SKRID platform.
       neo4j-admin load --from=/import/graph.dump --database=neo4j --force
    ```
 
-5. **Launch the full platform** (Neo4j, backend, frontend):
+5. **Asset generation** (PDF, SVG, MID, MSCZ):
+
+Assets need to be generated for front-end display. Go to [Data ingestion](https://gitlab.inria.fr/skrid/data-ingestion) for a CLI tool which transforms MEI files into cypher, pdf, midi and SVG.
+
+6. **Launch the full platform** (Neo4j, backend, frontend):
 
    ```bash
    docker compose up --build
