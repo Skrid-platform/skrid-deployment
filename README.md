@@ -105,6 +105,15 @@ Defaults for `API_BASE_URL` and `BASE_PATH` are handled by `docker-compose.yml` 
 
 ---
 
+## Manually add cypher files
+
+To manually add a `.cypher` file, you can run the command:
+```
+docker exec -i skrid-neo4j bin/cypher-shell -u [NEO4J_USER] -p [NEO4J_PASSWORD] < path/to/file.cypher
+```
+
+---
+
 ## Notes
 
 * The initial setup may take a few minutes on first run (image builds, network setup, etc.).
