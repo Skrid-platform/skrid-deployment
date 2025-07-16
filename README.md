@@ -4,20 +4,20 @@ This repository provides Docker-based orchestration for the SKRID platform.
 
 > **Note**: This repository only handles setup and deployment. For details on functionality and usage, refer to the individual repositories:
 >
-> * [Frontend README](https://gitlab.inria.fr/skrid/frontend/-/blob/main/README.md)
 > * [Backend README](https://gitlab.inria.fr/skrid/backend/-/blob/main/README.md)
+> * [Frontend README](https://gitlab.inria.fr/skrid/frontend/-/blob/main/README.md)
+> * [Client README](https://gitlab.inria.fr/skrid/client/-/blob/main/README.md)
 
 ---
 
 ## Requirements
-
 * [Docker](https://docs.docker.com/get-docker/)
 * [Docker Compose](https://docs.docker.com/compose/)
 
 ---
 
-## Quick Setup
-
+## Quick Setup (all with containers)
+<!-- TODO: update this section -->
 1. **Clone this repository and the frontend/backend repositories** side by side:
 
    ```bash
@@ -66,34 +66,35 @@ Assets need to be generated for front-end display. Go to [Data ingestion](https:
 
 ---
 
-## Alternative: Run a single container
+## Development setup
+For development and debugging, it is advised to run only the database in a container, and the rest without.
 
-You can also run only the database, for development or debugging:
-
-```bash
+- **Database**:
+```
 docker compose up neo4j
 ```
 
-And run the frontend or backend locally from their respective folders:
+- **Backend** (`./backend`, see the readme there for more details):
+```
+pip install -r requirements.txt
+python3 api.py
+```
 
-* **Frontend** (`./frontend`):
+- **Frontend server** (`./frontend`, see the readme there for more details):
+```
+npm install
+npm run nodemon
+```
 
-  ```bash
-  npm install
-  node index.js
-  ```
-
-* **Backend** (`./backend`):
-
-  ```bash
-  pip install -r requirements.txt
-  python3 api.py
-  ```
+- **Client (vueJS)** (`./client`, see the readme there for more details):
+```
+npm install
+npm run dev
+```
 
 ---
 
 ## Environment Variables
-
 Defined in `.env` (not versioned):
 
 ```env
@@ -106,7 +107,6 @@ Defaults for `API_BASE_URL` and `BASE_PATH` are handled by `docker-compose.yml` 
 ---
 
 ## Manually add cypher files
-
 To manually add a `.cypher` file, you can run the command:
 ```
 docker exec -i skrid-neo4j bin/cypher-shell -u [NEO4J_USER] -p [NEO4J_PASSWORD] < path/to/file.cypher
@@ -115,7 +115,6 @@ docker exec -i skrid-neo4j bin/cypher-shell -u [NEO4J_USER] -p [NEO4J_PASSWORD] 
 ---
 
 ## Notes
-
 * The initial setup may take a few minutes on first run (image builds, network setup, etc.).
 * Neo4j data is stored persistently in `neo4j/neo4j_data`.
-* Each project (frontend/backend) has its own Git repository and is mounted locally in this orchestration setup.
+* Each project (client/frontend/backend) has its own Git repository and is mounted locally in this orchestration setup.
