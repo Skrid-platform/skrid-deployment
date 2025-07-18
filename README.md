@@ -27,6 +27,8 @@ This repository provides Docker-based orchestration for the SKRID platform.
    git clone git@gitlab.inria.fr:skrid/backend.git
    ```
 
+   Note that it is not needed to clone the client for production, as it will be cloned and built inside the frontend docker.
+
 2. **Create the `.env` file** by copying the example and adjusting values if needed:
 
    ```bash
