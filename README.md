@@ -17,17 +17,16 @@ This repository provides Docker-based orchestration for the SKRID platform.
 ---
 
 ## Quick Setup (all with containers)
-<!-- TODO: update this section -->
 1. **Clone this repository and the frontend/backend repositories** side by side:
 
    ```bash
-   git clone git@gitlab.inria.fr:skrid/skrid-deployment.git
-   cd skrid-deployment
-   git clone git@gitlab.inria.fr:skrid/frontend.git
-   git clone git@gitlab.inria.fr:skrid/backend.git
+   git clone --depth=1 https://gitlab.inria.fr/skrid/skrid-deployment.git
+   cd skrid-deployment/
+   git clone --depth=1 https://gitlab.inria.fr/skrid/frontend.git
+   git clone --depth=1 https://gitlab.inria.fr/skrid/backend.git
    ```
 
-   Note that it is not needed to clone the client for production, as it will be cloned and built inside the frontend docker.
+   Note that it is not needed to clone the client for production, as it will be cloned and built inside the frontend docker container.
 
 2. **Create the `.env` file** by copying the example and adjusting values if needed:
 
@@ -38,7 +37,7 @@ This repository provides Docker-based orchestration for the SKRID platform.
 3. **Initialize the Neo4j volume** (this will create `neo4j/neo4j_data/`):
 
    ```bash
-   docker compose up neo4j
+   docker compose up neo4j --build
    ```
 
    Then stop the container with `Ctrl+C` once it's ready.
@@ -54,14 +53,25 @@ This repository provides Docker-based orchestration for the SKRID platform.
       neo4j-admin load --from=/import/graph.dump --database=neo4j --force
    ```
 
-5. **Asset generation** (PDF, SVG, MID, MSCZ):
+5. **Build the containers** (backend, frontend):
 
-Assets need to be generated for front-end display. Go to [Data ingestion](https://gitlab.inria.fr/skrid/data-ingestion) for a CLI tool which transforms MEI files into cypher, pdf, midi and SVG.
+   ```bash
+   docker compose up --build
+   ```
+
+   This will build the backend and the frontend.
+
+   For the frontend, it will take a while, because the following tasks will be realised:
+   - cloning and building the [client](https://gitlab.inria.fr/skrid/client) ;
+   - cloning and building verovio (needed to generate the other data formats, at next step) ;
+   - cloning and generating other formats of [data](https://gitlab.inria.fr/skrid/data).
+
+   Then stop the containers with `Ctrl+C` once it's ready.
 
 6. **Launch the full platform** (Neo4j, backend, frontend):
 
    ```bash
-   docker compose up --build
+   docker compose up
    ```
 
    Access the application at [http://localhost:3000](http://localhost:3000)
@@ -76,19 +86,19 @@ For development and debugging, it is advised to run only the database in a conta
 docker compose up neo4j
 ```
 
-- **Backend** (`./backend`, see the readme there for more details):
+- **Backend** (`./backend`, see the [readme](https://gitlab.inria.fr/skrid/backend/-/blob/main/README.md) there for more details):
 ```
 pip install -r requirements.txt
 python3 api.py
 ```
 
-- **Frontend server** (`./frontend`, see the readme there for more details):
+- **Frontend server** (`./frontend`, see the [readme](https://gitlab.inria.fr/skrid/frontend/-/blob/main/README.md) there for more details):
 ```
 npm install
 npm run nodemon
 ```
 
-- **Client (vueJS)** (`./client`, see the readme there for more details):
+- **Client (vueJS)** (`./client`, see the [readme](https://gitlab.inria.fr/skrid/client/-/blob/main/README.md) there for more details):
 ```
 npm install
 npm run dev
@@ -119,4 +129,4 @@ docker exec -i skrid-neo4j bin/cypher-shell -u [NEO4J_USER] -p [NEO4J_PASSWORD] 
 ## Notes
 * The initial setup may take a few minutes on first run (image builds, network setup, etc.).
 * Neo4j data is stored persistently in `neo4j/neo4j_data`.
-* Each project (client/frontend/backend) has its own Git repository and is mounted locally in this orchestration setup.
+* Each part of the project (client, frontend, backend, data, data-ingestion) has its own Git repository and is mounted locally in this orchestration setup.
